@@ -294,11 +294,12 @@ def save_load(jid, load):
     with _get_serv(commit=True) as cur:
 
         sql = '''INSERT INTO `jids`
-               (`jid`, `load`)
-                VALUES (%s, %s)'''
+               (`jid`, `load`, `tgt_type`, `cmd`, `tgt`, `user`, `fun`)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)'''
 
         try:
-            cur.execute(sql, (jid, json.dumps(load)))
+            cur.execute(sql, (jid, json.dumps(load), load['tgt_type'],
+                        load['cmd'], json.dumps(load['tgt']), load['user'], load['fun']))
         except MySQLdb.IntegrityError:
             # https://github.com/saltstack/salt/issues/22171
             # Without this try:except: we get tons of duplicate entry errors
